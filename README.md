@@ -91,7 +91,7 @@ timedatectl set-ntp true
 ## Preparing the Disk for System
 
 > :warning: Be extremely careful when managing your disks, incase you delete your precious data then DON'T blame me.
-
+> :warning: MOUNT ROOT FIRST!!!
 > Disk partitioning type (use UEFI or MBR, go according to your system).
 
 ## For UEFI System
@@ -170,9 +170,12 @@ Replace `Country1` & `Country2` with countries near to you or with the one you'r
 
 ### Install base system
 ```
-pacstrap -K /mnt base linux linux-firmware
+pacstrap -K /mnt base linux linux-firmware base-devel linux-headers nano amd-ucode reflector
 ```
 - Replace `linux` with *linux-hardened*, *linux-lts* or *linux-zen* to install the kernel of your choice.
+- Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
+- Replace `nano` with editor of your choice (i.e `vim` or `vi`).
+- Replace `intel-ucode` with `amd-ucode` if you are using an AMD Processor.
 
 ### Generate fstab
 (use `-U` or `-L` to define by [UUID](https://wiki.archlinux.org/index.php/UUID) or labels, respectively)
@@ -187,14 +190,6 @@ Check the resulting `/mnt/etc/fstab` file, and edit it in case of errors.
 ```
 arch-chroot /mnt
 ```
-
-## Install
-```
-pacman -S base-devel linux-headers nano intel-ucode reflector
-```
-- Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
-- Replace `nano` with editor of your choice (i.e `vim` or `vi`).
-- Replace `intel-ucode` with `amd-ucode` if you are using an AMD Processor.
 
 ### Set Time & Date
 ```
