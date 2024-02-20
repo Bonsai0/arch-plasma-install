@@ -170,12 +170,9 @@ Replace `Country1` & `Country2` with countries near to you or with the one you'r
 
 ### Install base system
 ```
-pacstrap /mnt base base-devel linux linux-firmware linux-headers nano intel-ucode reflector mtools dosfstools
+pacstrap -K /mnt base linux linux-firmware
 ```
 - Replace `linux` with *linux-hardened*, *linux-lts* or *linux-zen* to install the kernel of your choice.
-- Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
-- Replace `nano` with editor of your choice (i.e `vim` or `vi`).
-- Replace `intel-ucode` with `amd-ucode` if you are using an AMD Processor.
 
 ### Generate fstab
 (use `-U` or `-L` to define by [UUID](https://wiki.archlinux.org/index.php/UUID) or labels, respectively)
@@ -190,20 +187,14 @@ Check the resulting `/mnt/etc/fstab` file, and edit it in case of errors.
 ```
 arch-chroot /mnt
 ```
-### Create Swapfile (UEFI only)
-Replace the below 4096 in `count=4096` with double the amount of RAM installed your system. Not applicable on 16GB or more RAM.
-```
-dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-```
 
-### Add Swapfile entery in your `/etc/fstab` file (UEFI only)
+## Install
 ```
-/swapfile none swap defaults 0 0
+pacman -S base-devel linux-headers nano intel-ucode reflector
 ```
-Insert the above line at the bottom of `/etc/fstab`.
+- Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
+- Replace `nano` with editor of your choice (i.e `vim` or `vi`).
+- Replace `intel-ucode` with `amd-ucode` if you are using an AMD Processor.
 
 ### Set Time & Date
 ```
@@ -272,14 +263,9 @@ systemctl enable NetworkManager
 passwd
 ```
 
-### Install GRUB Bootloader
+### Install GRUB Bootloader, EFI Boot manager (UEFI)
 ```
-pacman -S grub
-```
-
-### Install EFI Boot manager (UEFI)
-```
-pacman -S efibootmgr
+pacman -S grub efibootmgr
 ```
 
 #### For UEFI System
@@ -347,7 +333,7 @@ sudo pacman -Syu
 ```
 sudo pacman -S xorg [xf86-video-your gpu type]
 ```
-- For Nvidia GPUs, type `nvidia` & `nvidia-settings`. For more info/old GPUs, refer to [Arch Wiki - Nvidia](https://wiki.archlinux.org/index.php/NVIDIA).
+- For Nvidia GPUs, type `nvidia` & `nvidia-settings`. For more info/old GPUs, refer to [Arch Wiki - Nvidia](https://wiki.archlinux.org/index.php/NVIDIA) [github](https://github.com/korvahannu/arch-nvidia-drivers-installation-guide).
 - For newer AMD GPUs, type `xf86-video-amdgpu`.
 - For legacy Radeon GPUs like HD 7xxx Series & below, type `xf86-video-ati`.
 - For dedicated Intel Graphics, type `xf86-video-intel`.
@@ -361,21 +347,10 @@ Edit `/etc/pacman.conf` & uncomment the below two lines.
 #Include = /etc/pacman.d/mirrorlist
 ```
 
-#### MESA Libraries (32bit)
-This package is required by Steam if you play games using Vulkan Backend.
+### KDE Plasma & sddm & Applications
 ```
-sudo pacman -S lib32-mesa
-```
-
-### Install & Enable SDDM
-```
-sudo pacman -S sddm
+sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager packagekit-qt5
 sudo systemctl enable sddm
-```
-
-### KDE Plasma & Applications
-```
-sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle krunner partitionmanager packagekit-qt5
 ```
 Packages         | Description
 ---------------- | ------------------------------------
@@ -386,12 +361,11 @@ ark              | Archiving Tool.
 kwrite           | Text Editor.
 kcalc            | Scientific Calculator.
 spectacle        | KDE screenshot capture utility.
-krunner          | KDE Quick drop-down desktop search.
 partitionmanager | KDE Disk & Partion Manager.
 
 ### Audio Utilities & Bluetooth
 ```
-sudo pacman -S alsa-utils bluez bluez-utils
+sudo pacman -S bluez bluez-utils
 ```
 Packages    | Description
 ----------- | -----------------------------------------
@@ -407,23 +381,15 @@ sudo systemctl enable bluetooth.service
 ### My Required Applications
 You can install all the following packages or only the one you want.
 ```
-sudo pacman -S firefox openssh qbittorrent audacious wget screen git neofetch
+sudo pacman -S firefox qbittorrent wget git neofetch
 ```
 Packages | Description
 --------- | ----------
 firefox | Mozilla Firefox Web Browser.
-openssh | Secure Shell access server.
 qbittorrent | A BitTorrent Client based on Qt.
-audacious | Qt based music player.
 wget | Wget is a free utility for non-interactive download of files from the Web.
-screen | Is a full-screen window manager that multiplexes a physical terminal between several processes, typically interactive shells.
 git | Github command-line utility tools.
 neofetch | Neofetch is a command-line system information tool.
-
-### Enable OpenSSH daemon
-```
-sudo systemctl enable sshd.service
-```
 
 ### Final Reboot
 ```
