@@ -333,7 +333,7 @@ sudo pacman -Syu
 ```
 sudo pacman -S xorg [xf86-video-your gpu type]
 ```
-- For Nvidia GPUs, type `nvidia` & `nvidia-settings`. For more info/old GPUs, refer to [Arch Wiki - Nvidia](https://wiki.archlinux.org/index.php/NVIDIA) [github](https://github.com/korvahannu/arch-nvidia-drivers-installation-guide).
+- For Nvidia GPUs, type `nvidia` & `nvidia-settings`. For more info/old GPUs, refer to [Arch Wiki - Nvidia](https://wiki.archlinux.org/index.php/NVIDIA).
 - For newer AMD GPUs, type `xf86-video-amdgpu`.
 - For legacy Radeon GPUs like HD 7xxx Series & below, type `xf86-video-ati`.
 - For dedicated Intel Graphics, type `xf86-video-intel`.
@@ -416,6 +416,9 @@ git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
 ```
+### Instal proprietary Nvidia drivers using a github guide
+
+[Nvidia drivers](https://github.com/korvahannu/arch-nvidia-drivers-installation-guide)
 
 ### Install [Zsh](https://wiki.archlinux.org/index.php/zsh/)
 Zsh is a powerful shell that operates as both an interactive shell and as a scripting language interpreter.
