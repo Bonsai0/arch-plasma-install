@@ -349,7 +349,7 @@ Edit `/etc/pacman.conf` & uncomment the below two lines.
 
 ### KDE Plasma & sddm & Applications
 ```
-sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager packagekit-qt5
+sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager
 sudo systemctl enable sddm
 ```
 Packages         | Description
@@ -362,6 +362,8 @@ kwrite           | Text Editor.
 kcalc            | Scientific Calculator.
 spectacle        | KDE screenshot capture utility.
 partitionmanager | KDE Disk & Partion Manager.
+[kde-applications](https://archlinux.org/groups/x86_64/kde-applications/)
+[Plasma](https://archlinux.org/groups/x86_64/plasma/)
 
 ### Audio Utilities & Bluetooth
 ```
