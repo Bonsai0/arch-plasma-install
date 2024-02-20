@@ -362,6 +362,7 @@ kwrite           | Text Editor.
 kcalc            | Scientific Calculator.
 spectacle        | KDE screenshot capture utility.
 partitionmanager | KDE Disk & Partion Manager.
+
 [kde-applications](https://archlinux.org/groups/x86_64/kde-applications/)
 [Plasma](https://archlinux.org/groups/x86_64/plasma/)
 
