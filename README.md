@@ -344,7 +344,7 @@ Edit `/etc/pacman.conf` & uncomment the below two lines.
 
 ### KDE Plasma & sddm & Applications
 ```
-sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager
+sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager firewalld
 sudo systemctl enable sddm
 ```
 Packages         | Description
