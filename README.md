@@ -424,6 +424,26 @@ sudo pacman -S zsh zsh-completions
 ```
 Read *[here](#install-oh-my-zsh)* for customisation & theming for Zsh. Read below how to change your SHELL.
 
+### Multi-boot
+```
+sudo nano /etc/default/grub
+```
+Uncomment the following line
+```
+##GRUB_DISABLE_OS_PROBER=false
+```
+
+```
+sudo pacman -S os-prober
+```
+And execute 
+```
+os-prober
+```
+Update Grub
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
 ### Changing your SHELL
 First check your current SHELL by running:
 ```
