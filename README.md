@@ -438,7 +438,7 @@ sudo pacman -S os-prober
 ```
 And execute 
 ```
-os-prober
+sudo os-prober
 ```
 Update Grub
 ```
