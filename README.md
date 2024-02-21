@@ -170,7 +170,7 @@ Replace `Country1` & `Country2` with countries near to you or with the one you'r
 
 ### Install base system
 ```
-pacstrap -K /mnt base linux linux-firmware base-devel linux-headers nano amd-ucode reflector
+pacstrap -K /mnt base linux linux-firmware base-devel linux-headers nano amd-ucode reflector dosfstools mtools
 ```
 - Replace `linux` with *linux-hardened*, *linux-lts* or *linux-zen* to install the kernel of your choice.
 - Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
