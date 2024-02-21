@@ -1,6 +1,6 @@
 [<img src="https://img.shields.io/badge/BTC-1USXozdnotw3u5XkzooUadw7NrdyV752V-E66000?labelColor=353535&style=for-the-badge&logo=btc"/>](https://acielgaming.cb.id)
 
-(Works with Arch ISO Image build as of: 2024.01.01)
+(Works with Arch ISO Image build as of: 2024.02.01)
 
 # Arch Linux with KDE Plasma Installation Guide (UEFI & MBR)
 
@@ -91,7 +91,7 @@ timedatectl set-ntp true
 ## Preparing the Disk for System
 
 > :warning: Be extremely careful when managing your disks, incase you delete your precious data then DON'T blame me.
-
+> :warning: MOUNT ROOT FIRST!!!
 > Disk partitioning type (use UEFI or MBR, go according to your system).
 
 ## For UEFI System
@@ -170,7 +170,7 @@ Replace `Country1` & `Country2` with countries near to you or with the one you'r
 
 ### Install base system
 ```
-pacstrap /mnt base base-devel linux linux-firmware linux-headers nano intel-ucode reflector mtools dosfstools
+pacstrap -K /mnt base linux linux-firmware base-devel linux-headers nano amd-ucode reflector
 ```
 - Replace `linux` with *linux-hardened*, *linux-lts* or *linux-zen* to install the kernel of your choice.
 - Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
@@ -190,20 +190,6 @@ Check the resulting `/mnt/etc/fstab` file, and edit it in case of errors.
 ```
 arch-chroot /mnt
 ```
-### Create Swapfile (UEFI only)
-Replace the below 4096 in `count=4096` with double the amount of RAM installed your system. Not applicable on 16GB or more RAM.
-```
-dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-```
-
-### Add Swapfile entery in your `/etc/fstab` file (UEFI only)
-```
-/swapfile none swap defaults 0 0
-```
-Insert the above line at the bottom of `/etc/fstab`.
 
 ### Set Time & Date
 ```
@@ -272,14 +258,9 @@ systemctl enable NetworkManager
 passwd
 ```
 
-### Install GRUB Bootloader
+### Install GRUB Bootloader, EFI Boot manager (UEFI)
 ```
-pacman -S grub
-```
-
-### Install EFI Boot manager (UEFI)
-```
-pacman -S efibootmgr
+pacman -S grub efibootmgr
 ```
 
 #### For UEFI System
@@ -361,21 +342,10 @@ Edit `/etc/pacman.conf` & uncomment the below two lines.
 #Include = /etc/pacman.d/mirrorlist
 ```
 
-#### MESA Libraries (32bit)
-This package is required by Steam if you play games using Vulkan Backend.
+### KDE Plasma & sddm & Applications
 ```
-sudo pacman -S lib32-mesa
-```
-
-### Install & Enable SDDM
-```
-sudo pacman -S sddm
+sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager firewalld
 sudo systemctl enable sddm
-```
-
-### KDE Plasma & Applications
-```
-sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle krunner partitionmanager packagekit-qt5
 ```
 Packages         | Description
 ---------------- | ------------------------------------
@@ -386,12 +356,17 @@ ark              | Archiving Tool.
 kwrite           | Text Editor.
 kcalc            | Scientific Calculator.
 spectacle        | KDE screenshot capture utility.
-krunner          | KDE Quick drop-down desktop search.
 partitionmanager | KDE Disk & Partion Manager.
+
+#### PACKAGES
+
+[kde-applications](https://archlinux.org/groups/x86_64/kde-applications/)
+
+[Plasma](https://archlinux.org/groups/x86_64/plasma/)
 
 ### Audio Utilities & Bluetooth
 ```
-sudo pacman -S alsa-utils bluez bluez-utils
+sudo pacman -S bluez bluez-utils
 ```
 Packages    | Description
 ----------- | -----------------------------------------
@@ -407,23 +382,15 @@ sudo systemctl enable bluetooth.service
 ### My Required Applications
 You can install all the following packages or only the one you want.
 ```
-sudo pacman -S firefox openssh qbittorrent audacious wget screen git neofetch
+sudo pacman -S firefox qbittorrent wget git neofetch
 ```
 Packages | Description
 --------- | ----------
 firefox | Mozilla Firefox Web Browser.
-openssh | Secure Shell access server.
 qbittorrent | A BitTorrent Client based on Qt.
-audacious | Qt based music player.
 wget | Wget is a free utility for non-interactive download of files from the Web.
-screen | Is a full-screen window manager that multiplexes a physical terminal between several processes, typically interactive shells.
 git | Github command-line utility tools.
 neofetch | Neofetch is a command-line system information tool.
-
-### Enable OpenSSH daemon
-```
-sudo systemctl enable sshd.service
-```
 
 ### Final Reboot
 ```
@@ -446,6 +413,9 @@ git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
 ```
+### Instal proprietary Nvidia drivers using a github guide
+
+[Nvidia drivers](https://github.com/korvahannu/arch-nvidia-drivers-installation-guide)
 
 ### Install [Zsh](https://wiki.archlinux.org/index.php/zsh/)
 Zsh is a powerful shell that operates as both an interactive shell and as a scripting language interpreter.
@@ -454,6 +424,26 @@ sudo pacman -S zsh zsh-completions
 ```
 Read *[here](#install-oh-my-zsh)* for customisation & theming for Zsh. Read below how to change your SHELL.
 
+### Multi-boot
+```
+sudo nano /etc/default/grub
+```
+Uncomment the following line
+```
+##GRUB_DISABLE_OS_PROBER=false
+```
+
+```
+sudo pacman -S os-prober
+```
+And execute 
+```
+sudo os-prober
+```
+Update Grub
+```
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
 ### Changing your SHELL
 First check your current SHELL by running:
 ```
