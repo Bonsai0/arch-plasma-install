@@ -412,6 +412,8 @@ Now everything is installed and after the final `reboot`, you will land in you G
 
 [drivers Wine](https://github.com/lutris/docs/blob/master/InstallingDrivers.md)
 
+https://christitus.com/ultimate-linux-gaming-guide/
+
 ### Install [Yay](https://github.com/Jguer/yay)
 Yet Another Yogurt - An AUR Helper.
 ```
