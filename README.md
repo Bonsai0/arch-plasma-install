@@ -406,6 +406,12 @@ Now everything is installed and after the final `reboot`, you will land in you G
 
 ## Extras (optional)
 
+### Gaming
+
+[dependencies Wine](https://github.com/lutris/docs/blob/master/WineDependencies.md)
+
+[drivers Wine](https://github.com/lutris/docs/blob/master/InstallingDrivers.md)
+
 ### Install [Yay](https://github.com/Jguer/yay)
 Yet Another Yogurt - An AUR Helper.
 ```
@@ -466,7 +472,7 @@ For the changes to apply, you will have Logout and Log back in or better do `reb
 [PipeWire](https://wiki.archlinux.org/title/PipeWire) is a new low-level multimedia framework. It aims to offer capture and playback for both audio and video with minimal latency and support for PulseAudio, JACK, ALSA and GStreamer-based applications.
 #### Install
 ```
-sudo pacman -S pipewire
+sudo pacman -S pipewire lib32-pipewire
 ```
 
 ## EasyEffects
