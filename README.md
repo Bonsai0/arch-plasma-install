@@ -149,7 +149,7 @@ btrfs su cr /mnt/@pkg
 
 btrfs su cr /mnt/@tmp
 
-btrfs su cr /mnt/@snapshots
+btrfs su cr /mnt/@.snapshots
 
 btrfs su li /mnt
 
@@ -159,7 +159,7 @@ umount /mnt
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@ /dev/[root partiton name] /mnt
 
-mkdir -p /mnt/{home,var/log,/var/cache/pacman/pkg,tmp,snapshots}
+mkdir -p /mnt/{home,var/log,/var/cache/pacman/pkg,tmp,.snapshots}
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@home /dev/[root partiton name] /mnt/home
 
@@ -169,7 +169,7 @@ mount -o defaults,noatime,compress=zstd,commit=120,subvol=@pkg /dev/[root partit
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/[root partiton name] /mnt/tmp
 
-mount -o defaults,noatime,compress=zstd,commit=120,subvol=@snapshots /dev/[root partiton name] /mnt/snapshots
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@.snapshots /dev/[root partiton name] /mnt/.snapshots
 
 ```
 ### Boot and swap
