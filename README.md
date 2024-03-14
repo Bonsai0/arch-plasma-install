@@ -92,11 +92,9 @@ timedatectl set-ntp true
 
 > :warning: Be extremely careful when managing your disks, incase you delete your precious data then DON'T blame me.
 > :warning: MOUNT ROOT FIRST!!!
-> Disk partitioning type (use UEFI or MBR, go according to your system).
+> Disk partitioning type (use UEFI, I dont support MBR go according to your system).
 
-## For UEFI System
-
-### Disk Partitioning (UEFI)
+## Disk Partitioning (UEFI)
 We are going to make two partitions on our HDD, `EFI BOOT & ROOT` using `gdisk`.
 - If you have a brand new HDD or if no partition table is found, then create GPT Partition Table by pressing `g`.
 ```
@@ -120,49 +118,73 @@ simply press enter = As Last sector [ROOT Partition Size (using the remaining di
 
 w = write & exit
 ```
-### Format Partitions (UEFI)
+## Format Partitions (UEFI)
 ```
 mkfs.fat -F32 /dev/[efi partition name]
-mkfs.ext4 /dev/[root partiton name]
-```
-
-### Mount Partitions (UEFI)
-```
-mount /dev/[root partition name] /mnt
-mkdir /mnt/boot/efi
-mount /dev/[efi partition name] /mnt/boot/efi
-```
-## For MBR System
-
-### Disk Partitioning (MBR)
-We are going to make two partitions on our HDD, `SWAP & ROOT` using `cfdisk`.
-- If you have a brand new HDD or if no partition table is found, then create MSDos Partition Table by selecting `msdos`.
-```
-cfdisk /dev/[disk name]
-```
-- [disk name] = device to partition, find yours by running `lsblk`.
-- SWAP Partition should double the size of RAM available in your system. Not applicable on 16GB or more RAM.
-- We will be using one partition for our `/`, `/boot` & `/home`.
-
-### Format the Partition, Make SWAP & Mount ROOT (MBR)
-#### Format ROOT Partition as EXT4
-```
 mkfs.ext4 /dev/[root partition name]
+mkfs.btrfs /dev/[root partition name]
 ```
-#### Make & Turn SWAP Partition on (MBR)
-```
-mkswap /dev/[swap partition name]
-swapon /dev/[swap partition name]
-```
-#### Mount ROOT Partition (MBR)
+
+## Mount Partitions (UEFI)
+
+### EXT4 partition
 ```
 mount /dev/[root partition name] /mnt
+mount /dev/[home partition name] /mnt/home
 ```
-</br>
+
+### BTRFS partition
+```
+mount /dev/[root partiton name] /mnt
+
+btrfs su cr /mnt/@
+
+btrfs su cr /mnt/@home
+
+btrfs su cr /mnt/@root
+
+btrfs su cr /mnt/@srv
+
+btrfs su cr /mnt/@log
+
+btrfs su cr /mnt/@cache
+
+btrfs su cr /mnt/@tmp
+
+btrfs su li /mnt
+
+cd /
+
+umount /mnt
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@ /dev/[root partiton name] /mnt
+
+mkdir -p /mnt/{home,root,srv,var/log,var/cache,tmp}
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@home /dev/[root partiton name] /mnt/home
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@root /dev/[root partiton name] /mnt/root
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@srv /dev/[root partiton name] /mnt/srv
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@log /dev/[root partiton name] /mnt/var/log
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@cache /dev/[root partiton name] /mnt/var/cache
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/[root partiton name] /mnt/tmp
+
+```
+### Systemd-boot
+
+Add /efi to the end of boot partition if you choose GRUB
+
+mkdir -p /mnt/boot
+
+mount /dev/[boot partition name] /mnt/boot
 
 ## Base System Installation
 
-### Update Mirrors using Reflector
+### Update Mirrors using Reflector[Optional]
 ```
 reflector -c County1 -c Country2 -a 12 -p https --sort rate --save /etc/pacman.d/mirrorlist
 ```
@@ -170,12 +192,14 @@ Replace `Country1` & `Country2` with countries near to you or with the one you'r
 
 ### Install base system
 ```
-pacstrap -K /mnt base linux linux-firmware base-devel linux-headers nano amd-ucode reflector dosfstools mtools
+pacstrap -K /mnt base base-devel linux linux-firmware linux-headers linux-lts linux-lts-headers nano amd-ucode reflector dosfstools mtools btrfs-progs
 ```
 - Replace `linux` with *linux-hardened*, *linux-lts* or *linux-zen* to install the kernel of your choice.
 - Replace `linux-headers` with Kernel type type of your choice respectively (e.g if you installed `linux-zen` then you will need `linux-zen-headers`).
+- Install `btrfs-progs` only if you use btrfs
 - Replace `nano` with editor of your choice (i.e `vim` or `vi`).
 - Replace `intel-ucode` with `amd-ucode` if you are using an AMD Processor.
+- I recommend you install `linux-lts` `linux-lts-headers` just in case kernel update fucks up your system
 
 ### Generate fstab
 (use `-U` or `-L` to define by [UUID](https://wiki.archlinux.org/index.php/UUID) or labels, respectively)
@@ -221,7 +245,7 @@ locale-gen
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 ```
 
-### Add Keymaps to vconsole
+### Add Keymaps to vconsole[for keyboards outside US layout]
 For keyboard users with non US Eng only. Replace `[keymap]` with yours.
 ```
 echo "KEYMAP=[keymap]" > /etc/vconsole.conf
@@ -258,19 +282,14 @@ systemctl enable NetworkManager
 passwd
 ```
 
-### Install GRUB Bootloader, EFI Boot manager (UEFI)
+## Install GRUB Bootloader, EFI Boot manager (UEFI)
 ```
 pacman -S grub efibootmgr
 ```
 
-#### For UEFI System
+### For UEFI System
 ```
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-```
-
-#### For MBR System
-```
-grub-install --target=i386-pc /dev/[disk name]
 ```
 
 ### Create Grub configuration file
@@ -278,10 +297,60 @@ grub-install --target=i386-pc /dev/[disk name]
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
+### Systemd-boot
+```
+bootctl install
+```
+nano /boot/loader/loader.conf
+````
+default  arch
+timeout  5
+editor   no
+````
+replace amd with intel-ucode in the next step if you use a intel CPU
+
+#### EXT4
+nano /boot/loader/entries/arch.conf
+```
+title Arch Linux
+linux /vmlinuz-linux
+initrd /amd-ucode.img
+initrd /initramfs-linux.img
+options root=/dev/[root partition] rw
+```
+cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-fallback.conf
+nano /boot/loader/entries/arch-fallback.conf
+```
+title Arch Linux Fallback
+linux /vmlinuz-linux
+initrd /amd-ucode.img
+initrd /initramfs-linux-fallback.img
+options root=/dev/[root partition] rw
+```
+
+#### BTRFS
+```
+title Arch Linux
+linux /vmlinuz-linux
+initrd  /amd-ucode.img
+initrd /initramfs-linux.img
+options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
+```
+cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-fallback.conf
+nano /boot/loader/entries/arch-fallback.conf
+```
+title Arch Linux Fallback
+linux /vmlinuz-linux
+initrd /initramfs-linux-fallback.img
+options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
+```
+systemctl enable systemd-boot-update.service
+bootctl list
+
 ### Final Step
 ```
 exit
-umount -a
+umount -R /mnt
 reboot
 ```
 </br>
@@ -290,9 +359,26 @@ reboot
 
 ### Login as ROOT
 
+
+### Enable Multilib Repo and paralleldownloads (optional)
+multilib contains 32-bit software and libraries that can be used to run and build 32-bit applications on 64-bit installs (e.g. [Wine](https://www.winehq.org/), [Steam](https://store.steampowered.com/), etc).
+
+Edit `/etc/pacman.conf` & uncomment the below two lines.
+```
+#before ParallelDownloads = 5
+#[multilib]
+#Include = /etc/pacman.d/mirrorlist
+```
+
+### Bash Completion
+
+```
+pacman -S bash-completion
+```
+
 ### Add new User
 ```
-useradd -mG wheel [username]
+useradd -m -g users -G audio,video,network,wheel,storage,rfkill -s /bin/bash [username]
 ```
 Replace `[username]` with your username of choice.
 
@@ -333,15 +419,6 @@ sudo pacman -S xorg [xf86-video-your gpu type]
 - For legacy Radeon GPUs like HD 7xxx Series & below, type `xf86-video-ati`.
 - For dedicated Intel Graphics, type `xf86-video-intel`.
 
-### Enable Multilib Repo (optional)
-multilib contains 32-bit software and libraries that can be used to run and build 32-bit applications on 64-bit installs (e.g. [Wine](https://www.winehq.org/), [Steam](https://store.steampowered.com/), etc).
-
-Edit `/etc/pacman.conf` & uncomment the below two lines.
-```
-#[multilib]
-#Include = /etc/pacman.d/mirrorlist
-```
-
 ### KDE Plasma & sddm & Applications
 ```
 sudo pacman -S plasma konsole dolphin ark kwrite kcalc spectacle partitionmanager firewalld
@@ -366,7 +443,7 @@ partitionmanager | KDE Disk & Partion Manager.
 
 ### Audio Utilities & Bluetooth
 ```
-sudo pacman -S bluez bluez-utils
+sudo pacman -S bluez bluez-utils --needed
 ```
 Packages    | Description
 ----------- | -----------------------------------------
