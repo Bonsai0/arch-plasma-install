@@ -345,7 +345,7 @@ nano /boot/loader/entries/arch-lts.conf
 
 ```
 title Arch Linux LTS
-linux /vmlinuz-linux-lts
+linux /vmlinuz-linux
 initrd /amd-ucode.img
 initrd /initramfs-linux-lts.img
 options root=/dev/[root partition] rw
@@ -381,7 +381,7 @@ nano /boot/loader/entries/arch-lts.conf
 ``
 ```
 title Arch Linux lts
-linux /vmlinuz-linux-lts
+linux /vmlinuz-linux
 initrd  /amd-ucode.img
 initrd /initramfs-linux-lts.img
 options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
