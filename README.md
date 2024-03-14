@@ -143,15 +143,11 @@ btrfs su cr /mnt/@
 
 btrfs su cr /mnt/@home
 
-btrfs su cr /mnt/@root
+btrfs su cr /mnt/@pkg
 
-btrfs su cr /mnt/@srv
+btrfs su cr /mnt/@.snapshots
 
 btrfs su cr /mnt/@log
-
-btrfs su cr /mnt/@cache
-
-btrfs su cr /mnt/@tmp
 
 btrfs su li /mnt
 
@@ -161,19 +157,17 @@ umount /mnt
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@ /dev/[root partiton name] /mnt
 
-mkdir -p /mnt/{home,root,srv,var/log,var/cache,tmp}
+mkdir -p /mnt/{root,home,.snapshots,var/log,var/cache/pacman/pkg}
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@home /dev/[root partiton name] /mnt/home
 
-mount -o defaults,noatime,compress=zstd,commit=120,subvol=@root /dev/[root partiton name] /mnt/root
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@ /dev/[root partiton name] /mnt/root
 
-mount -o defaults,noatime,compress=zstd,commit=120,subvol=@srv /dev/[root partiton name] /mnt/srv
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@pkg /dev/[root partiton name] /mnt/var/cache/pacman/pkg
+
+mount -o defaults,noatime,compress=zstd,commit=120,subvol=@.snapshots /dev/[root partiton name] /mnt/.snapshots
 
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@log /dev/[root partiton name] /mnt/var/log
-
-mount -o defaults,noatime,compress=zstd,commit=120,subvol=@cache /dev/[root partiton name] /mnt/var/cache
-
-mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/[root partiton name] /mnt/tmp
 
 ```
 ### Boot and swap
