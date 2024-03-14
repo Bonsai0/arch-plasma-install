@@ -179,9 +179,9 @@ mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/[root partit
 Add /efi to the end of boot partition if you choose GRUB
 
 ````
-mkdir -p /mnt/boot
+mkdir -p /mnt/boot/efi
 
-mount /dev/[boot partition name] /mnt/boot
+mount /dev/[boot partition name] /mnt/boot/efi
 ````
 ## Base System Installation
 
