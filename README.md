@@ -123,6 +123,7 @@ w = write & exit
 mkfs.fat -F32 /dev/[efi partition name]
 mkfs.ext4 /dev/[root partition name]
 mkfs.btrfs /dev/[root partition name]
+mkswap /dev/[swap partition name]
 ```
 
 ## Mount Partitions (UEFI)
@@ -131,6 +132,7 @@ mkfs.btrfs /dev/[root partition name]
 ```
 mount /dev/[root partition name] /mnt
 mount /dev/[home partition name] /mnt/home
+swapon /dev/[swap partition name]
 ```
 
 ### BTRFS partition
@@ -174,7 +176,7 @@ mount -o defaults,noatime,compress=zstd,commit=120,subvol=@cache /dev/[root part
 mount -o defaults,noatime,compress=zstd,commit=120,subvol=@tmp /dev/[root partiton name] /mnt/tmp
 
 ```
-### Systemd-boot
+### Boot and swap
 
 Add /efi to the end of boot partition if you choose GRUB
 
@@ -182,6 +184,8 @@ Add /efi to the end of boot partition if you choose GRUB
 mkdir -p /mnt/boot/efi
 
 mount /dev/[boot partition name] /mnt/boot/efi
+
+swapon /dev/[swap partition name]
 ````
 ## Base System Installation
 
