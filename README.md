@@ -386,10 +386,12 @@ initrd  /amd-ucode.img
 initrd /initramfs-linux-lts.img
 options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
 ```
-
+````
 systemctl enable systemd-boot-update.service
+````
+```
 bootctl list
-
+```
 ### Final Step
 ```
 exit
