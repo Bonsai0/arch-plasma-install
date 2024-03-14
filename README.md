@@ -297,11 +297,14 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-### Systemd-boot
+## Systemd-boot
 ```
 bootctl install
 ```
+`````
 nano /boot/loader/loader.conf
+`````
+
 ````
 default  arch
 timeout  5
@@ -309,7 +312,7 @@ editor   no
 ````
 replace amd with intel-ucode in the next step if you use a intel CPU
 
-#### EXT4
+### EXT4
 nano /boot/loader/entries/arch.conf
 ```
 title Arch Linux
@@ -318,13 +321,33 @@ initrd /amd-ucode.img
 initrd /initramfs-linux.img
 options root=/dev/[root partition] rw
 ```
+``
 cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-fallback.conf
+``
+``
 nano /boot/loader/entries/arch-fallback.conf
+``
+
 ```
 title Arch Linux Fallback
 linux /vmlinuz-linux
 initrd /amd-ucode.img
 initrd /initramfs-linux-fallback.img
+options root=/dev/[root partition] rw
+```
+
+``
+cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-lts.conf
+``
+``
+nano /boot/loader/entries/arch-lts.conf
+``
+
+```
+title Arch Linux LTS
+linux /vmlinuz-linux-lts
+initrd /amd-ucode.img
+initrd /initramfs-linux-lts.img
 options root=/dev/[root partition] rw
 ```
 
@@ -336,14 +359,34 @@ initrd  /amd-ucode.img
 initrd /initramfs-linux.img
 options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
 ```
+``
 cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-fallback.conf
+``
+``
 nano /boot/loader/entries/arch-fallback.conf
+``
 ```
 title Arch Linux Fallback
 linux /vmlinuz-linux
+initrd  /amd-ucode.img
 initrd /initramfs-linux-fallback.img
 options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
 ```
+
+``
+cp /boot/loader/entries/arch.conf /boot/loader/entries/arch-lts.conf
+``
+``
+nano /boot/loader/entries/arch-lts.conf
+``
+```
+title Arch Linux lts
+linux /vmlinuz-linux-lts
+initrd  /amd-ucode.img
+initrd /initramfs-linux-lts.img
+options initrd=/initramfs-linux.img root=/dev/[root partition] rw rootflags=subvol=@
+```
+
 systemctl enable systemd-boot-update.service
 bootctl list
 
