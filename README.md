@@ -2,7 +2,7 @@
 
 (Works with Arch ISO Image build as of: 2024.03.01)
 
-# Arch Linux with KDE Plasma Installation Guide (UEFI & MBR)
+# Arch Linux with KDE Plasma Installation Guide (UEFI)
 
 Hello everyone, This is my guide for installing minimal Arch Linux with KDE Plasma Desktop Environment. In this guide we will go step by step on how I install my Arch System and set everything up from scratch for a stable & healthy OS.
 </br>
@@ -11,7 +11,6 @@ Hello everyone, This is my guide for installing minimal Arch Linux with KDE Plas
  - [**Let's Begin**](#lets-begin)
  - [**Disk Partitioning**](#preparing-the-disk-for-system)
    - [UEFI System](#for-uefi-system)
-   - [MBR System](#for-mbr-system)
  - [**Base System Installation**](#base-system-installation)
    - [Update Mirrors](#update-mirrors-using-reflector)
    - [Base System](https://github.com/XxAcielxX/arch-plasma-install#install-base-system)
